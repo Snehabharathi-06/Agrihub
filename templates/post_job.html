@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Post a New Job</h2>
+
+<p>Fill the job details below.</p>
+
+<form method="post">
+
+    <label>Job Title</label>
+    <input name="title" required>
+
+    <label>Work Type</label>
+    <input name="work_type" placeholder="Harvesting, Planting, Cleaning, etc." required>
+
+    <label>Number of Days</label>
+    <input name="days" type="number" min="1" required>
+
+    <label>Stay Information</label>
+    <input name="stay_info" placeholder="Food/Stay Provided or Not">
+
+    <label>Wage</label>
+    <input name="wage" placeholder="₹ per day or total amount" required>
+
+    <label>Location</label>
+    <input name="location" required>
+
+    <label>Contact Number</label>
+    <input name="contact" required>
+
+    <button type="submit">Post Job</button>
+</form>
+
+{% endblock %}

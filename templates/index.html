@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Welcome to AgriHub</h2>
+
+<p>
+    This platform helps farmers and labourers connect easily.  
+    Farmers can post jobs, and labourers can view, request changes, negotiate, and confirm work.
+</p>
+
+<div style="margin-top:20px;">
+    <h3>Get Started</h3>
+    <ul>
+        <li><a href="/farmer/register">Farmer Register</a> | <a href="/farmer/login">Farmer Login</a></li>
+        <li><a href="/labour/register">Labour Register</a> | <a href="/labour/login">Labour Login</a></li>
+    </ul>
+</div>
+
+{% endblock %}

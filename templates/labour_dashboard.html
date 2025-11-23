@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Labour Dashboard — {{ user.name }}</h2>
+
+
+<!-- AVAILABLE JOBS -->
+<h3>Available Jobs</h3>
+
+{% if jobs %}
+    <ul>
+    {% for job in jobs %}
+        <li>
+            <strong>{{ job.title }}</strong><br>
+            Work: {{ job.work_type }} |
+            Days: {{ job.days }} |
+            Wage: {{ job.wage }}<br>
+            Location: {{ job.location }}<br>
+            Contact: {{ job.contact }}<br>
+
+            <a href="/job/{{ job.id }}">View Job</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No jobs available right now.</p>
+{% endif %}
+
+
+
+<!-- ASSIGNMENTS -->
+<h3>Your Assignments</h3>
+
+{% if assignments %}
+    <ul>
+    {% for a in assignments %}
+        <li>
+            <strong>Job ID:</strong> {{ a.job_id }}<br>
+
+            <strong>Accepted by Farmer:</strong> 
+            {{ 'Yes' if a.accepted_by_farmer else 'No' }}<br>
+
+            <strong>Confirmed by You:</strong> 
+            {{ 'Yes' if a.confirmed_by_labour else 'No' }}<br>
+
+            {% if a.accepted_by_farmer and not a.confirmed_by_labour %}
+                <!-- Button to confirm work -->
+                <form method="post" action="/assignment/{{ a.id }}/confirm">
+                    <button type="submit">Confirm Work</button>
+                </form>
+            {% endif %}
+
+            {% if a.accepted_by_farmer and a.confirmed_by_labour %}
+                <strong style="color:green;">Work Fully Confirmed ✔</strong>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No assignments yet.</p>
+{% endif %}
+
+{% endblock %}

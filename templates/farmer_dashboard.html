@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Farmer Dashboard — {{ user.name }}</h2>
+
+<!-- JOB LIST -->
+<h3>Your Job Posts</h3>
+{% if jobs %}
+<ul>
+{% for job in jobs %}
+    <li>
+        <strong>{{ job.title }}</strong><br>
+        Work: {{ job.work_type }} |
+        Days: {{ job.days }} |
+        Wage: {{ job.wage }}<br>
+        Location: {{ job.location }}<br>
+        Contact: {{ job.contact }}<br>
+        Status: <strong>{{ job.status }}</strong><br>
+
+        <a href="/job/{{ job.id }}">View Job Page</a>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No jobs posted yet.</p>
+{% endif %}
+
+
+<!-- LABOUR VIEWS -->
+<h3>Labour Views</h3>
+{% if view_details %}
+<ul>
+{% for item in view_details %}
+    <li>
+        <strong>Viewed by:</strong> {{ item.labour.name }} ({{ item.labour.phone }})<br>
+        Viewed at: {{ item.view.viewed_at }}<br>
+
+        <form method="post" action="/assign/{{ item.view.job_id }}/{{ item.labour.id }}" style="display:inline;">
+            <button type="submit">Accept Labour</button>
+        </form>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No labour views yet.</p>
+{% endif %}
+
+
+<!-- CHANGE REQUESTS -->
+<h3>Change Requests</h3>
+{% if change_reqs %}
+<ul>
+{% for cr in change_reqs %}
+    <li>
+        <strong>Job ID:</strong> {{ cr.job_id }}<br>
+        <strong>From Labour:</strong> {{ cr.labour_name }} ({{ cr.labour_phone }})<br>
+
+        {% if cr.requested_days %}Requested Days: {{ cr.requested_days }}<br>{% endif %}
+        {% if cr.requested_wage %}Requested Wage: {{ cr.requested_wage }}<br>{% endif %}
+        {% if cr.requested_stay %}Requested Stay: {{ cr.requested_stay }}<br>{% endif %}
+
+        Message: {{ cr.message }}<br>
+        Status: {{ cr.status }}<br><br>
+
+        {% if cr.status == 'pending' %}
+        <form method="post" action="/change/{{ cr.id }}/decide">
+            <button name="decision" value="accept">Accept</button>
+            <button name="decision" value="reject">Reject</button>
+        </form>
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No change requests.</p>
+{% endif %}
+
+
+<!-- ASSIGNMENTS -->
+<h3>Assignments</h3>
+{% if assignments %}
+<ul>
+{% for a in assignments %}
+    <li>
+        <strong>Job ID:</strong> {{ a.job_id }}<br>
+        <strong>Accepted by Farmer:</strong>
+        {{ 'Yes' if a.accepted_by_farmer else 'No' }}<br>
+        <strong>Confirmed by Labour:</strong>
+        {{ 'Yes' if a.confirmed_by_labour else 'No' }}<br>
+
+        {% if a.accepted_by_farmer and a.confirmed_by_labour %}
+            <strong style="color:green;">Work Fully Confirmed ✔</strong>
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No assignments yet.</p>
+{% endif %}
+
+{% endblock %}

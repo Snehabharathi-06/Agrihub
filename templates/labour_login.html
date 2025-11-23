@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Labour — Login</h2>
+
+<p>Login with your phone number and password.</p>
+
+<form method="post">
+    <label>Phone Number</label>
+    <input name="phone" required>
+
+    <label>Password</label>
+    <input name="password" type="password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+<p>Don’t have an account?  
+<a href="/labour/register">Register here</a>.</p>
+
+{% endblock %}

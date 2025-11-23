@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{ job.title }}</h2>
+
+<!-- JOB DETAILS -->
+<div style="background:#f1f1f1; padding:15px; border-radius:5px; margin-bottom:20px;">
+    <strong>Work Type:</strong> {{ job.work_type }}<br>
+    <strong>Days:</strong> {{ job.days }}<br>
+    <strong>Wage:</strong> {{ job.wage }}<br>
+    <strong>Stay Info:</strong> {{ job.stay_info }}<br>
+    <strong>Location:</strong> {{ job.location }}<br>
+    <strong>Contact:</strong> {{ job.contact }}<br>
+    <strong>Status:</strong> {{ job.status }}<br>
+</div>
+
+<h3>Farmer Details</h3>
+<p>
+    <strong>{{ farmer.name }}</strong><br>
+    Phone: {{ farmer.phone }}
+</p>
+
+
+<!-- LABOUR SIDE — SEND CHANGE REQUEST OR MESSAGE -->
+{% if user and user.role == 'labour' %}
+    <h3>Request Change / Send Message</h3>
+
+    <form method="post" action="/job/{{ job.id }}/request_change">
+
+        <label>Request Change in Days (optional)</label>
+        <input name="requested_days" type="number" min="1">
+
+        <label>Request Change in Wage (optional)</label>
+        <input name="requested_wage" placeholder="e.g., ₹600/day">
+
+        <label>Request Change in Stay Info (optional)</label>
+        <input name="requested_stay" placeholder="Food/Stay? etc.">
+
+        <label>Your Message to Farmer</label>
+        <textarea name="message"></textarea>
+
+        <button type="submit">Send Request</button>
+    </form>
+
+{% else %}
+    <p><i>Login as labour to request changes.</i></p>
+{% endif %}
+
+
+<!-- SHOW CHANGE REQUESTS -->
+<h3>Change Requests for This Job</h3>
+{% if change_reqs %}
+    <ul>
+        {% for cr in change_reqs %}
+            <li>
+                <strong>From Labour:</strong> Labour ID {{ cr.labour_id }}<br>
+
+                {% if cr.requested_days %}
+                    Requested Days: {{ cr.requested_days }}<br>
+                {% endif %}
+
+                {% if cr.requested_wage %}
+                    Requested Wage: {{ cr.requested_wage }}<br>
+                {% endif %}
+
+                {% if cr.requested_stay %}
+                    Requested Stay: {{ cr.requested_stay }}<br>
+                {% endif %}
+
+                Message: {{ cr.message }}<br>
+
+                Status: <strong>{{ cr.status }}</strong><br>
+
+                <!-- ONLY FARMER CAN ACCEPT OR REJECT -->
+                {% if user and user.role == 'farmer' and cr.status == 'pending' %}
+                    <form method="post" action="/change/{{ cr.id }}/decide" style="display:inline;">
+                        <button name="decision" value="accept">Accept</button>
+                        <button name="decision" value="reject">Reject</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No change requests yet.</p>
+{% endif %}
+
+{% endblock %}

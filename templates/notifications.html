@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Notifications — {{ user.name }}</h2>
+
+
+<!-- LABOUR VIEW NOTIFICATIONS -->
+<h3>Labour Views</h3>
+
+{% if views %}
+    <ul>
+    {% for item in views %}
+        <li>
+            <strong>Job:</strong> {{ item.job.title }} <br>
+            <strong>Viewed by:</strong> {{ item.labour.name }} ({{ item.labour.phone }}) <br>
+            Viewed at: {{ item.view.viewed_at }} <br>
+
+            <!-- Accept labour directly -->
+            <form method="post" action="/assign/{{ item.job.id }}/{{ item.labour.id }}" style="display:inline;">
+                <button type="submit">Accept Labour</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recent views.</p>
+{% endif %}
+
+
+
+<!-- CHANGE REQUESTS -->
+<h3>Change Requests</h3>
+
+{% if change_reqs %}
+    <ul>
+    {% for cr in change_reqs %}
+        <li>
+            <strong>Job ID:</strong> {{ cr.job_id }} <br>
+
+            <strong>From Labour:</strong>
+            {{ cr.labour_name }} ({{ cr.labour_phone }})<br>
+
+            {% if cr.requested_days %}
+                Requested Days: {{ cr.requested_days }} <br>
+            {% endif %}
+
+            {% if cr.requested_wage %}
+                Requested Wage: {{ cr.requested_wage }} <br>
+            {% endif %}
+
+            {% if cr.requested_stay %}
+                Requested Stay: {{ cr.requested_stay }} <br>
+            {% endif %}
+
+            Message: {{ cr.message }} <br>
+            Status: <strong>{{ cr.status }}</strong><br><br>
+
+            {% if cr.status == 'pending' %}
+                <form method="post" action="/change/{{ cr.id }}/decide" style="display:inline;">
+                    <button name="decision" value="accept">Accept</button>
+                    <button name="decision" value="reject">Reject</button>
+                </form>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No change requests yet.</p>
+{% endif %}
+
+{% endblock %}
